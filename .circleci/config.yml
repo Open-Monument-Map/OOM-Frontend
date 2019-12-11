@@ -26,7 +26,25 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: yarn install
+      - run:
+          name: "Setup custom environment variables"
+          command: |
+            echo 'export MY_ENV_VAR="TEST_ENV"' >> $BASH_ENV
+      - run: # test what branch we're on.
+          name: "What branch am I on?"
+          command: echo ${CIRCLE_BRANCH}
+
+      - run:
+          name: 'Install dependencies'
+          command: yarn install
+
+      - run:
+          name: "What branch am I on now?"
+          command: echo $CIRCLE_BRANCH # prints: XXXXXXX
+
+      - run:
+          name: "What was my custom environment variable?"
+          command: echo ${MY_ENV_VAR}  # prints: XXXXXXX
 
       - save_cache:
           paths:
@@ -34,4 +52,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: yarn test
+      - run:
+          name: 'Run tests'
+          command: yarn test
